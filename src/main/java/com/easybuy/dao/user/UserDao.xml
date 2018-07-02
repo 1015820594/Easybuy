@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.easybuy.dao.user.UserDao">
+	<cache size="1024" eviction="LRU" flushInterval="1000" readOnly="false"/>
+	<insert id="userAdd" keyColumn="uid" keyProperty="uid">
+		insert into easybuy_user(userName,loginName,password,sex,identityCode,email,mobile,type) 
+		values(#{userName},#{loginName},#{password},#{sex},#{identityCode},#{email},#{mobile},#{type})
+	</insert>
+	
+	<update id="upUser">
+		update easybuy_user 
+		<set>
+			<if test="userName!=null and userName!=''">
+				userName = #{userName},
+			</if>
+			<if test="loginName!=null and loginName!=''">
+				loginName = #{loginName},
+			</if>
+			<if test="password!=null and password!=''">
+				 password = #{password},
+			</if>
+			<if test="sex!=null and sex!=-1">
+				sex = #{sex},
+			</if>
+			<if test="identityCode!=null and identityCode!=''">
+				identityCode = #{identityCode},
+			</if>
+			<if test="email!=null and email!=''">
+				email = #{email},
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				mobile = #{mobile},
+			</if>
+			<if test="type!=null and type!=-1">
+				type = #{type},
+			</if>
+		</set>
+		where uid = #{uid}
+	</update>
+	
+	<delete id="delUser">
+		delete from easybuy_user where uid = #{uid};
+	</delete>
+
+	<select id="login" resultType="User">
+	  	select uid,userName,loginName,password,sex,identityCode,email,mobile,type from easybuy_user 
+	  	where loginName=#{loginName} and password=#{password}
+	</select>
+	
+	<select id="getPagesUserList" resultType="User" parameterType="Pages">
+	  	select uid,loginName,userName,sex,identityCode,email,mobile,type from easybuy_user order by uid asc limit #{pageIndexCount},#{pageSize};
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+	  	select count(1) from easybuy_user
+	</select>
+
+	<select id="findUser" resultType="User">
+	  	select uid,loginName,userName,identityCode,email,mobile,type from easybuy_user where uid=#{uid}
+	</select>
+</mapper>

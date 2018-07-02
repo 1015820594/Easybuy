@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.easybuy.dao.order.OrderDao">
+	<insert id="addorder" keyColumn="oid" keyProperty="oid">
+		insert into easybuy_order(userId,loginName,userAddress,createTime,cost,serialNumber)values(#{userId},#{loginName},#{userAddress},#{createTime},#{cost},#{serialNumber})
+	</insert>
+	
+	<select id="findorder" resultType="Order">
+		select userAddress,cost,oid,serialNumber from easybuy_order where userId=#{userId}
+	</select>
+	
+	<select id="findorderList" resultType="Order">
+		select userAddress,cost,oid,userName,serialNumber from easybuy_order,easybuy_user 
+		where easybuy_order.userId=easybuy_user.uid order by userId asc 
+	</select>
+	
+</mapper>

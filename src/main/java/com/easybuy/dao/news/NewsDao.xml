@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.easybuy.dao.news.NewsDao">
+	
+	<insert id="addNews">
+		insert into easybuy_news(title,content)
+		values(#{title},#{content})
+	</insert>
+	
+	<select id="getPagesNewsList" resultType="News" parameterType="Pages">
+		select nid,title,content,createTime from easybuy_news order by createTime asc limit #{pageIndexCount},#{pageSize}
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(1) from easybuy_news
+	</select>
+	
+	<select id="findnews" resultType="News">
+		select nid,title,content,createTime from easybuy_news where nid=#{nid}
+	</select>
+	
+</mapper>

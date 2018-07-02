@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.easybuy.dao.product.ProductDao">
+	<insert id="addorderDetail" >
+		insert into easybuy_order_detail(orderId,productId,quantity,cost)values(#{orderId},#{productId},#{quantity},#{cost})
+	</insert>
+	
+	<insert id="addpro" >
+		insert into easybuy_product(pname,description,price,stock,categoryLevel1Id,categoryLevel2Id,categoryLevel3Id,fileName,isDelete)
+		values(#{pname},#{description},#{price},#{stock},#{categoryLevel1Id},#{categoryLevel2Id},#{categoryLevel3Id},#{fileName},#{isDelete})
+	</insert>
+	
+	<update id="upPro">
+		update easybuy_product 
+		<set>
+			<if test="pname!=null and pname!=''">
+				pname = #{pname},
+			</if>
+			<if test="description!=null and description!=''">
+				description = #{description},
+			</if>
+			<if test="price!=null">
+				price = #{price},
+			</if>
+			<if test="stock!=null">
+				stock = #{stock},
+			</if>
+			<if test="categoryLevel1Id!=null and categoryLevel1Id!=0">
+				categoryLevel1Id = #{categoryLevel1Id},
+			</if>
+			<if test="categoryLevel2Id!=null and categoryLevel2Id!=0">
+				categoryLevel2Id = #{categoryLevel2Id},
+			</if>
+			<if test="categoryLevel3Id!=null and categoryLevel3Id!=0">
+				categoryLevel3Id = #{categoryLevel3Id},
+			</if>
+			<if test="fileName!=null and fileName!=''">
+				fileName = #{fileName},
+			</if>
+			<if test="isDelete!=null">
+				isDelete = #{isDelete},
+			</if>
+		</set>
+		where pid = #{pid}
+	</update>
+	
+	<update id="delpro">
+		update easybuy_product set isDelete = 1 where pid=#{pid}
+	</update>
+	
+	<select id="findProduct1" resultType="Product">
+		select pid,pname,description,price,stock,categoryLevel1Id,categoryLevel2Id,categoryLevel3Id,fileName,isDelete from easybuy_product 
+		where categoryLevel1Id=#{id} and isDelete = 0 limit #{pages.pageIndexCount},#{pages.pageSize};
+	</select>
+	
+	<select id="getProduct1Count" resultType="int">
+		select count(1) from easybuy_product where isDelete = 0
+			<if test="id1!=null and id1!=''">
+				and categoryLevel1Id=#{id1}
+			</if>
+			<if test="id2!=null and id2!=''">
+				and categoryLevel3Id=#{id2}
+			</if>
+			<if test="id3!=null and id3!=''">
+				and categoryLevel3Id=#{id3}
+			</if>
+
+	</select>
+	
+	<select id="getProduct" resultType="Product">
+		select pid,pname,description,price,stock,categoryLevel1Id,categoryLevel2Id,categoryLevel3Id,fileName,isDelete from easybuy_product 
+		where pid=#{pid} and isDelete = 0
+	</select>
+	
+	<select id="getPagesProductList" resultType="Product">
+		select pid,pname,stock,price,fileName from easybuy_product where isDelete = 0 order by pid asc limit #{pageIndexCount},#{pageSize}
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(1) from easybuy_product where isDelete = 0
+	</select>
+	
+	<select id="findProductById1" resultType="Product">
+		select * from easybuy_product where categoryLevel1Id=#{id1} and isDelete = 0 limit 0,6;
+	</select>
+	
+	<select id="findprobyCategoryLevel" resultType="Product">
+		select pid,pname,description,price,stock,categoryLevel1Id,categoryLevel2Id,categoryLevel3Id,fileName,isDelete from easybuy_product 
+		where isDelete = 0
+			<if test="categoryLevel2!=null and categoryLevel2!=''">
+				and categoryLevel2Id=#{categoryLevel2}
+			</if>
+			<if test="categoryLevel3!=null and categoryLevel3!=''">
+				and categoryLevel3Id=#{categoryLevel3}
+			</if>
+		limit #{pages.pageIndexCount},#{pages.pageSize}
+	</select>
+</mapper>

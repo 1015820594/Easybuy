@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.easybuy.dao.buycar.BuyCarDao">
+	<insert id="addBuycar" >
+		insert into easybuy_buycar(userId,loginName,cost,productId,quantity)
+		values(#{userId},#{loginName},#{cost},#{productId},#{quantity})
+	</insert>
+	
+	<update id="upBuycar">
+		update easybuy_buycar set quantity=quantity+#{quantity},cost=cost+#{cost} 
+		where userId=#{userId} and productId=#{productId}
+	</update>	
+	
+	<delete id="delpro">
+		delete from easybuy_buycar 
+		<where>
+				<if test="userId!=null and userId!=0">
+		  			userId=#{userId}
+		  		</if>
+		  		<if test="productId!=null and productId!=0">
+		  			and productId=#{productId}
+		  		</if>
+		</where>
+	</delete>
+	
+	<select id="findBuycar" resultType="Buycar">
+		select bid,userId,loginName,cost,productId,quantity,pname,price,fileName from easybuy_buycar,easybuy_product 
+		where easybuy_buycar.productId=easybuy_product.pid and userId=#{userId} and productId=#{productId}
+	</select>
+	
+	<select id="findAllBuycar" resultType="Buycar">
+		select bid,userId,loginName,cost,productId,quantity,pname,price,fileName from easybuy_buycar,easybuy_product
+		where easybuy_buycar.productId=easybuy_product.pid and userId=#{userId}
+	</select>
+</mapper>

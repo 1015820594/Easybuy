@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.easybuy.dao.productcategory.CategoryDao">
+	<cache size="1024" eviction="LRU" flushInterval="1000" readOnly="false"/>
+	
+	<delete id="delcategory">
+		delete from easybuy_product_category where pcid = #{pcid};
+	</delete>
+	
+	<select id="findCategory" resultType="ProductCategory">
+		select * from easybuy_product_category
+		<where> 
+		    <if test="type!=null and type!=0">
+	  			type = #{type}
+	  		</if>
+	  		<if test="parentId!=null and parentId!=0">
+	  			and parentId=#{parentId}
+	  		</if>
+	  	</where>
+	</select>
+	
+	<resultMap type="ProductCategory" id="ProductCategoryMap">
+		<id column="pcid" property="pcid"/>		
+		<collection property="productCategory" ofType="ProductCategory"/>
+	</resultMap>
+	<select id="getPagesCategoryList" resultMap="ProductCategoryMap">
+		select pc1.pcid,pc1.name,pc2.name,pc1.type from easybuy_product_category pc1 
+		left join easybuy_product_category pc2 on pc1.parentId = pc2.pcid  order by type desc  limit #{pageIndexCount},#{pageSize}
+	</select>
+	
+	<select id="getTotalCount" resultType="int">
+		select count(1) from easybuy_product_category
+	</select>
+	
+	<select id="getName" resultType="String">
+		select name from easybuy_product_category where pcid = #{id}
+	</select>
+	
+	<resultMap type="ProductCategory" id="findAllCategoryMap">
+		<id column="pcid" property="pcid"/>
+		<collection property="list" ofType="ProductCategory">
+			<id column="pcid" property="pcid"/>
+			<collection property="list" ofType="ProductCategory"/>
+		</collection>
+	</resultMap>
+	<select id="findAllCategory" resultMap="findAllCategoryMap">
+		select * from easybuy_product_category pc1 
+		left join easybuy_product_category pc2 on pc1.parentId = pc2.pcid
+		left join easybuy_product_category pc3 on pc2.parentId = pc3.pcid
+	</select>
+	
+	<select id="findchildren" resultType="int">
+		select count(1) from easybuy_product_category where parentId = #{pcid}
+	</select>
+	
+</mapper>
